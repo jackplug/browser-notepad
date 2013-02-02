@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+	<title>notepad</title>
+	<style>
+		#clearStorage { position: absolute; top: 5%; right: 10%; display: block; background: #888; color: #fff; text-decoration: none; font-family: Arial, sans-serif; font-size: 12px; line-height: 1; padding: 6px; text-align: center;
+			width: 18%;
+			-moz-transform:rotate(-90deg);  
+			-webkit-transform:rotate(-90deg);  
+			-o-transform:rotate(-90deg);  
+			-ms-transform:rotate(-90deg);
+			transform:rotate(-90deg);  
+
+			-webkit-transform-origin: 100% 0%;
+			-ms-transform-origin: 100% 0%;
+			-moz-transform-origin: 100% 0%;
+			-o-transform-origin: 100% 0%;
+			transform-origin: 100% 0%;
+		}
+		#clearStorage:hover, #clearStorage:active { background: #666; }
+		#editor-container { 
+
+
+			/* box dimensions */
+			height: 90%; margin: 0 10%; position: relative; top: 5%; z-index: 10;
+
+			overflow: auto;
+
+			/* outline with a shadow :) */
+			box-shadow: 1px 1px 9px rgba(0,0,0,0.2); 
+			
+
+		}
+		#editor { 
+			/* ensures that line-breaks/spacing remain intact */
+			white-space: pre; 
+
+			-moz-box-sizing: border-box; box-sizing: border-box; 
+			overflow-x: auto; overflow-y: hidden; min-height: 100%; padding: 20px 3%; outline: none; max-width: 100%;
+
+			/* lined background */
+			font: 10pt Arial, sans-serif; line-height: 20px;
+			background-image: 
+				-webkit-linear-gradient(top, white 0px, white -1px, rgba(255,255,255,0) 0px), 
+				-webkit-repeating-linear-gradient(white 0px, white 18px, #A6FFED 19px, white 20px);
+			background-image: 
+				-moz-linear-gradient(top, white 0px, white -1px, rgba(255,255,255,0) 0px), 
+				-moz-repeating-linear-gradient(white 0px, white 18px, #A6FFED 19px, white 20px);
+			background-image: 
+				-ms-linear-gradient(top, white 0px, white -1px, rgba(255,255,255,0) 0px), 
+				-ms-repeating-linear-gradient(white 0px, white 18px, #A6FFED 19px, white 20px);
+			background-image: 
+				-o-linear-gradient(top, white 0px, white -1px, rgba(255,255,255,0) 0px), 
+				-o-repeating-linear-gradient(white 0px, white 18px, #A6FFED 19px, white 20px);
+			background-image: 
+				linear-gradient(top, white 0px, white -1px, rgba(255,255,255,0) 0px), 
+				repeating-linear-gradient(white 0px, white 18px, #A6FFED 19px, white 20px);
+			background-size: auto, auto 20px;
+			background-repeat: no-repeat, repeat;
+			background-position: 0px 0px, 0px 0px;
+
+		 }
+
+		body, html { height: 100%; background: #fff; margin:0; padding: 0; }
+	</style>
+<script>
+var editor;
+
+// Feature detect + local reference
+// checks that set value is correctly returned
+// via http://mathiasbynens.be/notes/localstorage-pattern
+var storage,
+	fail,
+	uid;
+try {
+	uid = new Date;
+	(storage = window.localStorage).setItem(uid, uid);
+	fail = storage.getItem(uid) != uid;
+	storage.removeItem(uid);
+	fail && (storage = false);
+} catch(e) {};
+
+function initNotepad() {
+	if (!storage) {
+		alert('Your notes will not be stored on closing the browser. If this is a requirement, please use a browser that supports localStorage');  
+		return; 
+	}
+	editor = document.getElementById('editor');
+	restoreNotes();
+	editor.onkeypress = handleKeyEvent;
+	
+	var clear = document.getElementById('clearStorage');
+	clear.onclick = clearLocalStorage;
+}
+function restoreNotes() {
+	if (localStorage.length == 0) return;
+	editor.innerHTML = localStorage.getItem('note');
+}
+function handleKeyEvent(e) {
+	localStorage.setItem('note', editor.innerHTML)
+}
+function clearLocalStorage(e) {
+	e.preventDefault();
+	localStorage.clear();
+	editor.innerHTML = '';
+}
+</script>
+
+</head>
+<body onload="initNotepad()"><div id="editor-container"><div id="editor" contenteditable></div></div>
+<a href="#" id="clearStorage">Clear Notepad and clearStorage</a></body>
+</html>
