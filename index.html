@@ -93,7 +93,7 @@ function initNotepad() {
 	}
 	editor = document.getElementById('editor');
 	restoreNotes();
-	editor.onkeypress = handleKeyEvent;
+	editor.onkeyup = handleKeyEvent;
 	
 	var clear = document.getElementById('clearStorage');
 	clear.onclick = clearLocalStorage;
